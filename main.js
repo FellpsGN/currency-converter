@@ -7,29 +7,43 @@ const footer = document.querySelector("footer")
 const description = document.getElementById("description")
 const result = document.getElementById("result")
 
-const hasCharactersRegex = /\D+/g
+const hasCharactersRegex = /[^\d,]+/g
+
+
+async function fetchCurrencies(from, to) {
+    const urlCurrency = `https://economia.awesomeapi.com.br/json/last/${from}-${to}`
+    const response = await fetch(urlCurrency)
+    const data = await response.json()
+    return data
+}
+
+function getExchangeRate(data, from, to) {
+    const bid = parseFloat(data[`${from}${to}`].bid)
+    return bid
+}
+
+function updateResult(amount, from, converted, to) {
+    footer.style.display = "block"
+    description.textContent = `${amount} ${from} = ${converted} ${to}`
+    result.textContent = `${converted} ${toCurrency.value}`      
+}
 
 async function convertCurrency(amountInput) {
+
     try {
-        const urlCurrency = `https://economia.awesomeapi.com.br/json/last/${fromCurrency.value}-${toCurrency.value}`
-        const response = await fetch(urlCurrency)
-        const data = await response.json()
-        console.log(data)
-        const bid = parseFloat(data[`${fromCurrency.value}${toCurrency.value}`].bid)
+        const data = await fetchCurrencies(fromCurrency.value, toCurrency.value)
+        const bid = getExchangeRate(data, fromCurrency.value, toCurrency.value)
+
         const converted = (bid * parseFloat(amountInput)).toFixed(2)
         
-        console.log(`Valor convertido: ${converted}`)
-        
-        footer.style.display = "block"
-        description.textContent = `${amountInput} ${fromCurrency.value} = ${converted} ${toCurrency.value}`
-        result.textContent = `${converted} ${toCurrency.value}`
+        updateResult(amountInput, fromCurrency.value, converted, toCurrency.value)
     
     } catch(error) {
-        console.error("Erro ao converter moeda:", error)
         alert("Não foi possível converter a moeda")
     }
-    
 }
+
+
 
 amountInput.addEventListener("input", () => {
     amount.value = amount.value.replace(hasCharactersRegex, "")
