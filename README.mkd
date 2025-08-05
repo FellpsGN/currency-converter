@@ -1,0 +1,13 @@
+![preview](./.github/preview.png)
+
+## 🎯 Focus
+- DOM manipulation using vanilla JavaScript
+- Fetching data from API's with `fetch`
+- Handling asynchronous operations
+- Organizing and refactoring code into reusable functions
+
+## 🛠 Technologies
+- HTML
+- CSS
+- JavaScript
+- Git & Github
